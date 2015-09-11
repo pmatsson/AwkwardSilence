@@ -26,6 +26,8 @@ namespace NoAwkwardSilence
             
         }
 
+
+        // Update the sound source listbox
         private void updateBtn_Click(object sender, EventArgs e)
         {
             sourceListBox.Items.Clear();
@@ -36,7 +38,7 @@ namespace NoAwkwardSilence
             }
         }
 
-
+        // Start monitoring the selected sound session
         private void startBtn_Click(object sender, EventArgs e)
         {
            if (sourceListBox.CheckedItems.Count > 0)
@@ -48,7 +50,9 @@ namespace NoAwkwardSilence
                    {
                        defaultSession_ = session;
                        timer1.Start();
+                       logTextBox.Text = "Start";
                        splitContainer.Panel1.Enabled = false;
+                       groupBox1.Enabled = false;
                        startBtn.Enabled = false;
                        stopBtn.Enabled = true;
                        break;
@@ -57,14 +61,19 @@ namespace NoAwkwardSilence
            }
         }
 
+        // Stop monintoring sound session
         private void stopBtn_Click(object sender, EventArgs e)
         {
             timer1.Stop();
+            logTextBox.Text = "Stop";
+            audio_.UnmuteSession(defaultSession_);
             splitContainer.Panel1.Enabled = true;
+            groupBox1.Enabled = true;
             startBtn.Enabled = true;
             stopBtn.Enabled = false;
         }
 
+        // Enable other GUI elements when a source is checked
         private void sourceListBox_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             if (e.NewValue == CheckState.Checked && sourceListBox.CheckedItems.Count > 0)
@@ -84,40 +93,44 @@ namespace NoAwkwardSilence
             }
         }
 
+        // Check for sound changes every second
         private void timer1_Tick(object sender, EventArgs e)
         {
-            logTextBox.Clear();
             if (audio_.IsAwkward(defaultSession_, toleranceTrackBar.Value))
             {
-                logTextBox.AppendText("Sound source: Queued\n");
-                if (awkwardMeter_ > delayTrackBar.Value*10)
-                {
-                    logTextBox.Clear();
-                    logTextBox.AppendText("Sound source: ON\n");
-                    audio_.UnmuteSession(defaultSession_);
-                }
-                awkwardMeter_++;
+                    logTextBox.Text = "Sound source: Queued\n";
+                    if (awkwardMeter_ > delayTrackBar.Value)
+                    {
+                        logTextBox.Text = "Sound source: ON\n";
+                        if(muteRadio.Checked)
+                        {
+                            audio_.UnmuteSession(defaultSession_);
+                        }
+                        else if(!audio_.SessionPlaying(defaultSession_))
+                        {
+                            audio_.UnpauseSession(defaultSession_);
+                        }      
+                    }
+                    awkwardMeter_++;
+                
             }
             else
             {
-                logTextBox.AppendText("Sound source: OFF\n");
-                awkwardMeter_ = 0;
-                audio_.MuteSession(defaultSession_);
+                    logTextBox.Text = "Sound source: OFF\n";
+                    awkwardMeter_ = 0;
+                    if (muteRadio.Checked)
+                    {
+                        audio_.MuteSession(defaultSession_);
+                    }
+                    else if (audio_.SessionPlaying(defaultSession_))
+                    {
+                        audio_.PauseSession(defaultSession_);
+                    }   
             }
         }
 
-        private void muteRadio_CheckedChanged(object sender, EventArgs e)
-        {
-            if(muteRadio.Checked)
-            {
-                splitContainer.Show();
-            }
-            else
-            {
-                splitContainer.Hide();
-            }
-        }
 
+        // Save settings as form closes
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             audio_.UnmuteSession(defaultSession_);
