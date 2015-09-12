@@ -17,6 +17,8 @@ namespace NoAwkwardSilence
         private List<AudioSession> sessionList_;
         private AudioSession defaultSession_;
         private int awkwardMeter_ = 0;
+        private  System.Drawing.Color colorDisabled_ = System.Drawing.Color.IndianRed;
+        private  System.Drawing.Color colorEnabled_ = System.Drawing.Color.DarkSlateGray;
 
         public MainForm()
         {
@@ -31,6 +33,8 @@ namespace NoAwkwardSilence
         private void updateBtn_Click(object sender, EventArgs e)
         {
             sourceListBox.Items.Clear();
+            splitContainer.Panel2.Enabled = false;
+            splitContainer.Panel2.BackColor = colorDisabled_;
             sessionList_ = audio_.GetAudioSessionList();
             foreach (var session in sessionList_)
             {
@@ -52,7 +56,9 @@ namespace NoAwkwardSilence
                        timer1.Start();
                        logTextBox.Text = "Start";
                        splitContainer.Panel1.Enabled = false;
+                       splitContainer.Panel1.BackColor = colorDisabled_;
                        groupBox1.Enabled = false;
+                       groupBox1.BackColor = colorDisabled_;
                        startBtn.Enabled = false;
                        stopBtn.Enabled = true;
                        break;
@@ -66,14 +72,16 @@ namespace NoAwkwardSilence
         {
             timer1.Stop();
             logTextBox.Text = "Stop";
-            audio_.UnmuteSession(defaultSession_);
+            audio_.Mute(defaultSession_, false);
             splitContainer.Panel1.Enabled = true;
+            splitContainer.Panel1.BackColor = colorEnabled_;
             groupBox1.Enabled = true;
+            groupBox1.BackColor = colorEnabled_;
             startBtn.Enabled = true;
             stopBtn.Enabled = false;
         }
 
-        // Enable other GUI elements when a source is checked
+        // Enable GUI elements when a source is checked
         private void sourceListBox_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             if (e.NewValue == CheckState.Checked && sourceListBox.CheckedItems.Count > 0)
@@ -86,10 +94,12 @@ namespace NoAwkwardSilence
             if(e.NewValue == CheckState.Unchecked && sourceListBox.CheckedItems.Count <= 1)
             {
                 splitContainer.Panel2.Enabled = false;
+                splitContainer.Panel2.BackColor = colorDisabled_;
             }
             else
             {
                 splitContainer.Panel2.Enabled = true;
+                splitContainer.Panel2.BackColor = colorEnabled_;
             }
         }
 
@@ -98,17 +108,17 @@ namespace NoAwkwardSilence
         {
             if (audio_.IsAwkward(defaultSession_, toleranceTrackBar.Value))
             {
-                    logTextBox.Text = "Sound source: Queued\n";
+                    logTextBox.Text = "Audio: None " + Environment.NewLine + "Sound source: Queued\n";
                     if (awkwardMeter_ > delayTrackBar.Value)
                     {
-                        logTextBox.Text = "Sound source: ON\n";
+                        logTextBox.Text = "Audio: None" + Environment.NewLine + "Sound source: ON\n";
                         if(muteRadio.Checked)
                         {
-                            audio_.UnmuteSession(defaultSession_);
+                            audio_.Mute(defaultSession_, false);
                         }
                         else if(!audio_.SessionPlaying(defaultSession_))
                         {
-                            audio_.UnpauseSession(defaultSession_);
+                            audio_.TogglePause(defaultSession_);
                         }      
                     }
                     awkwardMeter_++;
@@ -116,16 +126,16 @@ namespace NoAwkwardSilence
             }
             else
             {
-                    logTextBox.Text = "Sound source: OFF\n";
-                    awkwardMeter_ = 0;
+                    logTextBox.Text = "Audio: Detected" + Environment.NewLine + "Sound source: OFF\n";
                     if (muteRadio.Checked)
                     {
-                        audio_.MuteSession(defaultSession_);
+                        audio_.Mute(defaultSession_, true);
                     }
                     else if (audio_.SessionPlaying(defaultSession_))
                     {
-                        audio_.PauseSession(defaultSession_);
-                    }   
+                        audio_.TogglePause(defaultSession_);
+                    }
+                    awkwardMeter_ = 0;
             }
         }
 
@@ -133,10 +143,30 @@ namespace NoAwkwardSilence
         // Save settings as form closes
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            audio_.UnmuteSession(defaultSession_);
+            audio_.Mute(defaultSession_, false);
             Properties.Settings.Default.Delay = delayTrackBar.Value;
             Properties.Settings.Default.Tolerance = toleranceTrackBar.Value;
             Properties.Settings.Default.Save();
+        }
+
+        private void MainForm_SizeChanged(object sender, EventArgs e)
+        {
+            if (FormWindowState.Minimized == this.WindowState)
+            {
+                notifyIcon1.Visible = true;
+                notifyIcon1.ShowBalloonTip(500);
+                this.Hide();
+            }
+            else if (FormWindowState.Normal == this.WindowState)
+            {
+                notifyIcon1.Visible = false;
+            }
+        }
+
+        private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            this.Show();
+            this.WindowState = FormWindowState.Normal;
         }
 
     }

@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.playRadio = new System.Windows.Forms.RadioButton();
@@ -46,6 +47,7 @@
             this.startBtn = new System.Windows.Forms.Button();
             this.logTextBox = new System.Windows.Forms.TextBox();
             this.stopBtn = new System.Windows.Forms.Button();
+            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.delayTrackBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.toleranceTrackBar)).BeginInit();
@@ -62,9 +64,11 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.BackColor = System.Drawing.Color.DarkSlateGray;
             this.groupBox1.Controls.Add(this.playRadio);
             this.groupBox1.Controls.Add(this.muteRadio);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupBox1.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(455, 33);
@@ -86,6 +90,7 @@
             // 
             this.muteRadio.AutoSize = true;
             this.muteRadio.Checked = true;
+            this.muteRadio.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.muteRadio.Location = new System.Drawing.Point(74, 12);
             this.muteRadio.Name = "muteRadio";
             this.muteRadio.Size = new System.Drawing.Size(97, 17);
@@ -134,12 +139,15 @@
             // 
             // splitContainer.Panel1
             // 
+            this.splitContainer.Panel1.BackColor = System.Drawing.Color.DarkSlateGray;
             this.splitContainer.Panel1.Controls.Add(this.label1);
             this.splitContainer.Panel1.Controls.Add(this.sourceListBox);
             this.splitContainer.Panel1.Controls.Add(this.updateBtn);
+            this.splitContainer.Panel1.ForeColor = System.Drawing.SystemColors.HighlightText;
             // 
             // splitContainer.Panel2
             // 
+            this.splitContainer.Panel2.BackColor = System.Drawing.Color.IndianRed;
             this.splitContainer.Panel2.Controls.Add(this.label4);
             this.splitContainer.Panel2.Controls.Add(this.label3);
             this.splitContainer.Panel2.Controls.Add(this.label2);
@@ -149,6 +157,7 @@
             this.splitContainer.Panel2.Controls.Add(this.logTextBox);
             this.splitContainer.Panel2.Controls.Add(this.stopBtn);
             this.splitContainer.Panel2.Enabled = false;
+            this.splitContainer.Panel2.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.splitContainer.Size = new System.Drawing.Size(455, 265);
             this.splitContainer.SplitterDistance = 149;
             this.splitContainer.TabIndex = 6;
@@ -164,27 +173,30 @@
             // 
             // updateBtn
             // 
+            this.updateBtn.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.updateBtn.ForeColor = System.Drawing.SystemColors.ControlText;
             this.updateBtn.Location = new System.Drawing.Point(32, 209);
             this.updateBtn.Name = "updateBtn";
             this.updateBtn.Size = new System.Drawing.Size(69, 23);
             this.updateBtn.TabIndex = 0;
             this.updateBtn.Text = "Refresh";
-            this.updateBtn.UseVisualStyleBackColor = true;
+            this.updateBtn.UseVisualStyleBackColor = false;
             this.updateBtn.Click += new System.EventHandler(this.updateBtn_Click);
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(3, 7);
+            this.label4.ForeColor = System.Drawing.SystemColors.HighlightText;
+            this.label4.Location = new System.Drawing.Point(23, 7);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(108, 13);
+            this.label4.Size = new System.Drawing.Size(86, 13);
             this.label4.TabIndex = 10;
-            this.label4.Text = "Delay until unmute (s)";
+            this.label4.Text = "Unmute delay (s)";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(3, 58);
+            this.label3.Location = new System.Drawing.Point(23, 58);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(85, 13);
             this.label3.TabIndex = 9;
@@ -193,7 +205,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(3, 109);
+            this.label2.Location = new System.Drawing.Point(23, 106);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(56, 13);
             this.label2.TabIndex = 8;
@@ -201,17 +213,21 @@
             // 
             // startBtn
             // 
+            this.startBtn.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.startBtn.ForeColor = System.Drawing.SystemColors.ControlText;
             this.startBtn.Location = new System.Drawing.Point(132, 209);
             this.startBtn.Name = "startBtn";
             this.startBtn.Size = new System.Drawing.Size(75, 23);
             this.startBtn.TabIndex = 2;
             this.startBtn.Text = "Start";
-            this.startBtn.UseVisualStyleBackColor = true;
+            this.startBtn.UseVisualStyleBackColor = false;
             this.startBtn.Click += new System.EventHandler(this.startBtn_Click);
             // 
             // logTextBox
             // 
+            this.logTextBox.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.logTextBox.Enabled = false;
+            this.logTextBox.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.logTextBox.Location = new System.Drawing.Point(132, 106);
             this.logTextBox.Multiline = true;
             this.logTextBox.Name = "logTextBox";
@@ -221,14 +237,24 @@
             // 
             // stopBtn
             // 
+            this.stopBtn.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.stopBtn.Enabled = false;
+            this.stopBtn.ForeColor = System.Drawing.SystemColors.ControlText;
             this.stopBtn.Location = new System.Drawing.Point(218, 209);
             this.stopBtn.Name = "stopBtn";
             this.stopBtn.Size = new System.Drawing.Size(75, 23);
             this.stopBtn.TabIndex = 4;
             this.stopBtn.Text = "Stop";
-            this.stopBtn.UseVisualStyleBackColor = true;
+            this.stopBtn.UseVisualStyleBackColor = false;
             this.stopBtn.Click += new System.EventHandler(this.stopBtn_Click);
+            // 
+            // notifyIcon1
+            // 
+            this.notifyIcon1.BalloonTipText = "AwkwardSilence was minimized to the system tray!";
+            this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
+            this.notifyIcon1.Text = "AwkwardSilence";
+            this.notifyIcon1.Visible = true;
+            this.notifyIcon1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDoubleClick);
             // 
             // MainForm
             // 
@@ -238,10 +264,12 @@
             this.Controls.Add(this.splitContainer);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "AwkwardSilence - BETA";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+            this.SizeChanged += new System.EventHandler(this.MainForm_SizeChanged);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.delayTrackBar)).EndInit();
@@ -275,6 +303,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TrackBar delayTrackBar;
         private System.Windows.Forms.TrackBar toleranceTrackBar;
+        private System.Windows.Forms.NotifyIcon notifyIcon1;
     }
 }
 
