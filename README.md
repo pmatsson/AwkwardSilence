@@ -7,5 +7,3 @@ The program basically starts the audio from a given sound source when all other 
 
 ###Build
 Requires the [cscore audio lib.](https://cscore.codeplex.com/)
-
-###Download
